@@ -21,6 +21,7 @@ public class Compte {
     private TypeCompte typeC;
     @Column(name = "solde")
     private double solde;
+    long code;
 
     public Compte() {
 

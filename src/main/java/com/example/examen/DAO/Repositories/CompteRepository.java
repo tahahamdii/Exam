@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CompteRepository extends JpaRepository<Compte, Long> {
     // Add any custom methods for CompteRepository if needed
+    Compte findByCode(long code);
 }

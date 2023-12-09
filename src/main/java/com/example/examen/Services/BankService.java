@@ -1,14 +1,13 @@
 package com.example.examen.Services;
 
-import com.example.examen.DAO.Entities.Bank;
-import com.example.examen.DAO.Entities.Compte;
-import com.example.examen.DAO.Entities.Transaction;
+import com.example.examen.DAO.Entities.*;
 import com.example.examen.DAO.Repositories.BankRepository;
 import com.example.examen.DAO.Repositories.CompteRepository;
 import com.example.examen.DAO.Repositories.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,15 +63,30 @@ private TransactionRepository transactionRepository;
         return "Transaction added successfully.";
     }
 
+
+
     public String ajouterVirement(Transaction transaction) {
-        // Add debug log
-        System.out.println("Adding virement: " + transaction);
+        transaction.setExpediteur(compteRepository.findByCode(transaction.getExpediteur().getCode()));
+        transaction.setDestinataire(compteRepository.findByCode(transaction.getDestinataire().getCode()));
+        if (transaction.getTypeT().equals(TypeTransaction.VIREMENT) && (transaction.getExpediteur().getTypeC().equals(TypeCompte.EPARGNE))) {
+            return "On ne peut pas faire un virement à partir d’un compte épargne";
+        } else {
+            if ( !(transaction.getExpediteur().getTypeC().equals(TypeCompte.EPARGNE)) && (transaction.getExpediteur().getSolde() < (transaction.getMontant() + 3))||(transaction.getExpediteur().getTypeC().equals(TypeCompte.EPARGNE)) && (transaction.getExpediteur().getSolde() < transaction.getMontant())) {
 
-        // Implement the logic to add a virement transaction and return an appropriate message
-        // ...
+                return "On ne peut pas faire un virement : Solde insuffisant";
+            } else {
+                Compte expediteur = compteRepository.findByCode(transaction.getExpediteur().getCode());
+                Compte destinataire = compteRepository.findByCode(transaction.getDestinataire().getCode());
+                expediteur.setSolde(expediteur.getSolde() - (transaction.getMontant() + 3));
+                destinataire.setSolde(destinataire.getSolde() + transaction.getMontant());
+                transaction.setDateTransaction(LocalDate.now());
 
-        // Customize the logic based on your requirements
-        return "VIREMENT approved successfully.";
+                compteRepository.save(expediteur);
+                compteRepository.save(destinataire);
+                transactionRepository.save(transaction);
+                return "VIREMENT de "+transaction.getMontant()+" DT de compte "+expediteur.getIdCompte()+" vers le compte "+destinataire.getIdCompte()+" approuvée avec succès";
+            }
+        }
     }
 
     // Add more service methods as needed

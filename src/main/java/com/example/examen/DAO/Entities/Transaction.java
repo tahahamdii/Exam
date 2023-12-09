@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.Date;
 @Table(name = "transaction")
 @Entity
@@ -23,7 +24,7 @@ public class Transaction {
     @Column(name = "typeT")
     private TypeTransaction typeT;
     @Column(name = "datetransaction")
-    private Date dateTransaction ;
+    private LocalDate dateTransaction;
     @ManyToOne
     private Compte destinataire;
     @ManyToOne

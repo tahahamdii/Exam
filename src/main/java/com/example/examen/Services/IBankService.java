@@ -8,4 +8,5 @@ public interface IBankService {
     public Bank ajouterBank(Bank bank);
     public Compte ajouterCompteEtAffecterAAgence(Compte compte, String agenceBank);
     public String ajouterVirement(Transaction transaction);
+
 }

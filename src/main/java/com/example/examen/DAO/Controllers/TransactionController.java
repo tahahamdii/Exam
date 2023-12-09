@@ -6,12 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import com.example.examen.Services.IBankService;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/transactions")
 public class TransactionController {
+    IBankService IBankService;
 
     @Autowired
     private BankService transactionService;
@@ -24,26 +25,24 @@ public class TransactionController {
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // Endpoint for adding a virement transaction
-    @PostMapping("/ajouterVirement")
-    public ResponseEntity<String> ajouterVirement(@RequestBody Transaction transaction) {
-        String message = transactionService.ajouterVirement(transaction);
-        return new ResponseEntity<>(message, HttpStatus.OK);
+    @PostMapping("addVirement")
+    public String ajouterVirement(@RequestBody Transaction transaction){
+        return IBankService.ajouterVirement(transaction);
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     // Add more controller methods as needed
 }
